@@ -32,9 +32,11 @@ export default ({ navigation }) => {
   const [loading, setLoading] = useState(true);
   const [hasPermission, setHasPermission] = useState(false);
   const [selected, setSelected] = useState([]);
+  const [uploadFile, setUploadFile] = useState([]);
   const [allPhotos, setAllPhotos] = useState();
-  const changeSelected = photo => {
+  const changeSelected = async (photo) => {
     setSelected(photo);
+    setUploadFile([...uploadFile, photo])
   };
   const getPhotos = async () => {
     try {
@@ -67,43 +69,42 @@ export default ({ navigation }) => {
   useEffect(() => {
     askPermission();
   }, []);
+  navigation.navigate("PhotoTabs", { photo: selected, uploadFile });
 
-  navigation.navigate("PhotoTabs", { photo: selected });
-  
   return (
     <View>
       {loading ? (
         <Loader />
       ) : (
-        <View>
-          {hasPermission ? (
-            <>
-              <Image
-                style={{ width: constants.width, height: constants.width }}
-                source={{ uri: selected.uri }}
+          <View>
+            {hasPermission ? (
+              <>
+                <Image
+                  style={{ width: constants.width, height: constants.width }}
+                  source={{ uri: selected.uri }}
                 />
-                
-              <ScrollView contentContainerStyle={{ flexDirection: "row", flexWrap:"wrap" }}>
-                {allPhotos.map(photo => (
-                  <TouchableOpacity
-                    key={photo.id}
-                    onPress={() => changeSelected(photo)}
-                  >
-                    <Image
-                      source={{ uri: photo.uri }}
-                      style={{
-                        width: constants.width / 3,
-                        height: constants.height / 6,
-                        opacity: photo.id === selected.id ? 0.5 : 1
-                      }}
-                    />
-                  </TouchableOpacity>
-              ))}
-              </ScrollView>
-            </>
-          ) : null}
-        </View>
-      )}
+
+                <ScrollView contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap" }}>
+                  {allPhotos.map(photo => (
+                    <TouchableOpacity
+                      key={photo.id}
+                      onPress={() => changeSelected(photo)}
+                    >
+                      <Image
+                        source={{ uri: photo.uri }}
+                        style={{
+                          width: constants.width / 3,
+                          height: constants.height / 6,
+                          opacity: photo.id === selected.id ? 0.5 : 1
+                        }}
+                      />
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </>
+            ) : null}
+          </View>
+        )}
     </View>
   );
 };

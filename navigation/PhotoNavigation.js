@@ -23,16 +23,16 @@ const PhotoTabs = createMaterialTopTabNavigator(
         }
     },
     {
-       tabBarPosition: "bottom",
+        tabBarPosition: "bottom",
         tabBarOptions: {
-            
+
             indicatorStyle: {
                 backgroundColor: styles.navyColor,
                 marginBottom: 48
             },
             labelStyle: {
-            color: styles.navyColor,
-            fontWeight: "600"
+                color: styles.navyColor,
+                fontWeight: "600"
             },
             style: {
                 //paddingBottom: 20,
@@ -47,7 +47,7 @@ const PhotoTabs = createMaterialTopTabNavigator(
 export default createStackNavigator(
     {
         PhotoTabs: {
-            screen:PhotoTabs,
+            screen: PhotoTabs,
             navigationOptions: {
                 //headerShown:false,
                 headerBackTitle: " ",
@@ -55,19 +55,20 @@ export default createStackNavigator(
                 title: "사진 선택",
                 headerRight: <UploadLink />
             }
-           
+
         },
         Upload: {
-            screen:UploadPhoto,
+            screen: UploadPhoto,
             navigationOptions: {
                 headerBackTitle: " ",
                 headerTintColor: styles.blackColor,
-                title:"업로드"
+
+                title: "업로드"
             }
         }
-        
+
     },
     {
-        mode:"modal"
+        mode: "modal"
     }
 );

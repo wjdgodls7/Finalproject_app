@@ -3,21 +3,19 @@
 ##Screens :
 
 <<<<<<< HEAD
-- [ ] Home
-- [ ] Search
-- [ ] Upload
-- [ ] Notifications (Challenge)
-- [ ] Profile
-- [ ] Edit Profile (Challenge)
-- [ ] Photo Detail
-=======
 - [x] Home
 - [x] Search
 - [x] Upload
-- [ ] Notifications (Challenge)
+- [x] Notifications (Challenge)
 - [x] Profile
-- [ ] Edit Profile (Challenge)
+- [x] Edit Profile (Challenge)
 - [x] Photo Detail
->>>>>>> 7172813addf28a49245f23fd600acf3641520cf2
-- [ ] Photo Comments (Challenge)
-- [ ] Photo Likes (Challenge)
+- [x] Home
+- [x] Search
+- [x] Upload
+- [x] Notifications (Challenge)
+- [x] Profile
+- [x] Edit Profile (Challenge)
+- [x] Photo Detail
+- [x] Photo Comments (Challenge)
+- [x] Photo Likes (Challenge)

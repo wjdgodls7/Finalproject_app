@@ -59,6 +59,13 @@ const Text = styled.Text`
 export default ({ navigation }) => {
   const [loading, setIsLoading] = useState(false);
   const photo = navigation.getParam("photo");
+  const uploaded = navigation.getParam("uploadFile")
+  const fileuri = uploaded.map((upload) => upload.uri)
+  const filename = uploaded.map((upload) => upload.filename)
+
+  console.log(fileuri)
+  console.log(filename);
+
   const captionInput = useInput("");
   const [tagInput, setTagInput] = useState();
   const locationInput = useInput("");
@@ -135,12 +142,11 @@ export default ({ navigation }) => {
           <Tags
             initialText="Tag"
             onChangeTags={tags => {
-              console.log(tagInput)
               return setTagInput([...tags])
             }}
             onTagPress={(index, tagLabel, event) => console.log(index, tagLabel, event)}
             inputStyle={{ backgroundColor: "white" }}
-            maxNumberOfTags="3"
+            maxNumberOfTags={3}
           />
           <Button onPress={handleSubmit}>
             {loading ? (

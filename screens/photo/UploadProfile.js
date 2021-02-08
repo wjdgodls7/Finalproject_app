@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Image, ActivityIndicator, Alert,Platform } from "react-native";
+import { Image, ActivityIndicator, Alert, Platform } from "react-native";
 import styled from "styled-components/native";
 import axios from "axios";
 import { gql } from "apollo-boost";
@@ -47,13 +47,14 @@ const EDIT_USER = gql`
 export default ({ navigation }) => {
   const [loading, setIsLoading] = useState(false);
   const photo = navigation.getParam("photo")
+
   const [editUserMutation] = useMutation(EDIT_USER);
 
   const handleSubmit = async () => {
 
     const formData = new FormData();
-      const name = photo.filename;
-      const [, type] = name.split(".");
+    const name = photo.filename;
+    const [, type] = name.split(".");
     const imageType = Platform.os === "ios" ? type.toLowerCase() : "image/jpeg";
     formData.append("file", {
       name,
