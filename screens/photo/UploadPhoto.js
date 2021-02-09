@@ -63,9 +63,6 @@ export default ({ navigation }) => {
   const fileuri = uploaded.map((upload) => upload.uri)
   const filename = uploaded.map((upload) => upload.filename)
 
-  console.log(fileuri)
-  console.log(filename);
-
   const captionInput = useInput("");
   const [tagInput, setTagInput] = useState();
   const locationInput = useInput("");
@@ -79,6 +76,7 @@ export default ({ navigation }) => {
     const formData = new FormData();
     const name = photo.filename;
     const [, type] = name.split(".");
+    console.log(type)
     const imageType = Platform.os === "ios" ? type.toLowerCase() : "image/jpeg";
     formData.append("file", {
       name,

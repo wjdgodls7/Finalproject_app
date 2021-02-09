@@ -80,7 +80,7 @@ const Button1 = styled.View`
   margin-top:10px;
   width:90px;
   align-items: center;
-  margin-left : ${constants.width / 2.2/4};
+  margin-left : ${constants.width / 2.2 / 4};
   background-color:${styles.navyColor};
   height:30px;
   border-radius: 15px;
@@ -109,6 +109,10 @@ const EditText = styled.Text`
   text-align: center;
 `;
 
+const SET_STATE = gql`
+mutation state($state:String!){
+  state(state:$state)
+}`;
 const FOLLOW = gql`
   mutation following($id: String!) {
     following(id: $id)
@@ -138,34 +142,39 @@ const UserProfile = ({
 
 }) => {
   const [isGrid, setIsGrid] = useState(true);
+  const [state, setState] = useState("1");
   const toggleGrid = () => setIsGrid(i => !i);
   const [editProfile, setEditProfile] = useState(false);
   const [userInfo, setUserInfo] = useState({
-      username,
-      avatar,
-      firstName,
-      lastName,
-      bio,
+    username,
+    avatar,
+    firstName,
+    lastName,
+    bio,
   });
-    const [isFollowingS, setIsFollowing] = useState(isFollowing);
-    const [followMutation] = useMutation(FOLLOW, {
-        variables: { id },
-        refetchQueries: [{ query: ME, query: FEED_QUERY }]
-    });
-    const [unfollowMutation] = useMutation(UNFOLLOW, {
-        variables: { id },
-        refetchQueries: [{ query: ME, query: FEED_QUERY }]
-    });
+  const [isFollowingS, setIsFollowing] = useState(isFollowing);
+  const [stateMutation] = useMutation(SET_STATE, {
+    variables: { state: state },
+    refetchQueries: [{ query: ME, query: FEED_QUERY }]
+  })
+  const [followMutation] = useMutation(FOLLOW, {
+    variables: { id },
+    refetchQueries: [{ query: ME, query: FEED_QUERY }]
+  });
+  const [unfollowMutation] = useMutation(UNFOLLOW, {
+    variables: { id },
+    refetchQueries: [{ query: ME, query: FEED_QUERY }]
+  });
 
-    const Following = async () => {
-        if (isFollowingS === true) {
-            setIsFollowing(false);
-            unfollowMutation();
-        } else {
-            setIsFollowing(true);
-            followMutation();
-        }
-    };
+  const Following = async () => {
+    if (isFollowingS === true) {
+      setIsFollowing(false);
+      unfollowMutation();
+    } else {
+      setIsFollowing(true);
+      followMutation();
+    }
+  };
   return (!editProfile ? (
     <View>
       <ProfileHeader>
@@ -212,6 +221,19 @@ const UserProfile = ({
       </ProfileMeta>
       <SettingBar onPress={() => setEditProfile(true)}>
         <EditText>프로필 편집</EditText>
+      </SettingBar>
+      <SettingBar onPress={async () => {
+        let cstate = state;
+        if (state === "1") {
+          cstate = "2";
+          setState(cstate);
+        } else {
+          cstate = "1";
+          setState(cstate);
+        }
+        await stateMutation();
+      }}>
+        <EditText>{state}</EditText>
       </SettingBar>
       <ButtonContainer>
         <TouchableOpacity onPress={toggleGrid}>
