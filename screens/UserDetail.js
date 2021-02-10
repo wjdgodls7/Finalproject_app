@@ -17,28 +17,19 @@ export const GET_USER = gql`
 `;
 
 export default ({ navigation }) => {
-  const { loading, data } = useQuery(GET_USER, {
+  const { loading, data, refetch } = useQuery(GET_USER, {
     variables: { username: navigation.getParam("username") }
   });
-  const { data: { me } } = useQuery(ME)
+  refetch()
   console.log(data.seeUser.state)
-  console.log(`${data.seeUser.username} : ` + data.seeUser.state)
-  console.log((data.seeUser.state === "2" && me.isFollowing))
-  if (data.seeUser.username === me.username || data.seeUser.state === "1" || (data.seeUser.state === "2" && me.isFollowing)) {
-    return (
-      <ScrollView>
-        {loading ? (
-          <Loader />
-        ) : (
-            data && data.seeUser && <UserProfile {...data.seeUser} />
-          )}
-      </ScrollView>
-    );
-  } else {
-    return (<ScrollView>
+  return (
+    <ScrollView>
       {loading ? (
-        <Loader />) : (<Text>비공개 계정입니다.</Text>)
-      }
-    </ScrollView>)
-  }
+        <Loader />
+      ) : (
+          data && data.seeUser && <UserProfile {...data.seeUser} />
+        )}
+    </ScrollView>
+  );
+
 };

@@ -72,18 +72,20 @@ const Button = styled.View`
 const NameContainer = styled.View`
   padding-vertical: 5px;
   margin-top: -10px;
-  width:${constants.width / 2.2}
+  width:${constants.width / 3}
   height :${constants.height / 10};
+  flex-direction: row;
 `;
 
 const Button1 = styled.View`
   margin-top:10px;
   width:90px;
   align-items: center;
-  margin-left : ${constants.width / 2.2 / 4};
+  margin-left : ${constants.width / 6 / 4};
   background-color:${styles.navyColor};
   height:30px;
   border-radius: 15px;
+  
 `;
 
 const Text = styled.Text`
@@ -114,14 +116,14 @@ mutation state($state:String!){
   state(state:$state)
 }`;
 const FOLLOW = gql`
-  mutation following($id: String!) {
-    following(id: $id)
+  mutation follow($id: String!) {
+    follow(id: $id)
   }
 `;
 
 const UNFOLLOW = gql`
-  mutation unfollowing($id: String!) {
-    unfollowing(id: $id)
+  mutation unfollow($id: String!) {
+    unfollow(id: $id)
   }
 `;
 
@@ -139,10 +141,12 @@ const UserProfile = ({
   username,
   firstName,
   lastName,
+  state
 
 }) => {
   const [isGrid, setIsGrid] = useState(true);
-  const [state, setState] = useState("1");
+  const [states, setState] = useState("1");
+  const [change, setChange] = useState("전체 봄")
   const toggleGrid = () => setIsGrid(i => !i);
   const [editProfile, setEditProfile] = useState(false);
   const [userInfo, setUserInfo] = useState({
@@ -151,11 +155,15 @@ const UserProfile = ({
     firstName,
     lastName,
     bio,
+    isFollowing,
+    username,
+    state
+
   });
   const [isFollowingS, setIsFollowing] = useState(isFollowing);
   const [stateMutation] = useMutation(SET_STATE, {
-    variables: { state: state },
-    refetchQueries: [{ query: ME, query: FEED_QUERY }]
+    variables: { state: states },
+    refetchQueries: [{ query: ME }]
   })
   const [followMutation] = useMutation(FOLLOW, {
     variables: { id },
@@ -166,6 +174,8 @@ const UserProfile = ({
     refetchQueries: [{ query: ME, query: FEED_QUERY }]
   });
 
+  console.log(userInfo.state)
+  console.log(isFollowing)
   const Following = async () => {
     if (isFollowingS === true) {
       setIsFollowing(false);
@@ -208,6 +218,19 @@ const UserProfile = ({
           </NameContainer>
           <NameContainer>
             {/*                          */}
+            {isSelf ? <Button1><TouchableOpacity onPress={async () => {
+              let cstate = states;
+              if (states === "1") {
+                cstate = "2";
+                setState(cstate);
+                setChange("친구만 봄")
+              } else {
+                cstate = "1";
+                setState(cstate);
+                setChange("전체 봄");
+              }
+              await stateMutation();
+            }}><Text>{change}</Text></TouchableOpacity></Button1> : null}
             <Button1>
               {isSelf ? (<TouchableOpacity onPress={useLogOut()}><Text>로그아웃</Text></TouchableOpacity>)
                 :
@@ -221,19 +244,6 @@ const UserProfile = ({
       </ProfileMeta>
       <SettingBar onPress={() => setEditProfile(true)}>
         <EditText>프로필 편집</EditText>
-      </SettingBar>
-      <SettingBar onPress={async () => {
-        let cstate = state;
-        if (state === "1") {
-          cstate = "2";
-          setState(cstate);
-        } else {
-          cstate = "1";
-          setState(cstate);
-        }
-        await stateMutation();
-      }}>
-        <EditText>{state}</EditText>
       </SettingBar>
       <ButtonContainer>
         <TouchableOpacity onPress={toggleGrid}>
@@ -255,12 +265,13 @@ const UserProfile = ({
           </Button>
         </TouchableOpacity>
       </ButtonContainer>
-      {isGrid ? <SquareBox>{posts && posts.map(p => {
-        return (<SquarePhoto key={p.id} {...p} />)
-      })}</SquareBox> : <>
-          {posts && posts.map(p => {
-            return (<Post key={p.id} {...p} />)
-          })}</>}
+      {isSelf || userInfo.state === "1" || (userInfo.state === "2" && isFollowing) ?
+        (<>{isGrid ? <SquareBox>{posts && posts.map(p => {
+          return (<SquarePhoto key={p.id} {...p} />)
+        })}</SquareBox> : <>
+            {posts && posts.map(p => {
+              return (<Post key={p.id} {...p} />)
+            })}</>}</>) : <EditText>비공개 계정입니다.</EditText>}
     </View>) : (
       <EditProfile navigation={navigation} userAvatar={avatar} userInfo={userInfo} setUserInfo={setUserInfo} setEditProfile={setEditProfile} />
     )
